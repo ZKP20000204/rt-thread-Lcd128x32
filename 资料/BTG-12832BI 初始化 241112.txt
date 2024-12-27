@@ -1,0 +1,34 @@
+void lcd_initial()
+{
+    CSB=0;			  //Enable the IC
+    delay_ms(30);       //Waiting for the chip select signal is stabilized 
+	  RST=0;			  //Reset
+	  delay_ms(10);       //Waiting for the power is stabilized
+	  RST=1;			  //Release the reset state
+    delay_ms(10);       //Waiting reset circuit stabilized
+
+    wr_cmd(0xae);       //display off
+	  wr_cmd(0xa2);		  //Set 1/6 bias
+	  wr_cmd(0xa0);       //set seg0---seg131,adc normal
+	  wr_cmd(0xc8);       //set com63---com0,Common output mode select
+	  wr_cmd(0x40);       //display start line
+	  wr_cmd(0xa6);       //display normal
+
+	  wr_cmd(0x23);		  //IRS=1,set (1+Rb/Ra)=4.5
+	  wr_cmd(0x81);       //Enable the Electronic Volume Mode Set
+	  wr_cmd(31);   //Electronic volume register set(contrast:0~63),contrast=31,VOP=4.5*(99+31)/162*2.1=7.58V
+
+	  wr_cmd(0xf8);       //Enable The Booster Ratio
+    wr_cmd(0x00);       //4x
+                 	      
+	  wr_cmd(0x2c);	      //Booster circuit:ON,Voltage regulator circuit:OFF,Voltage follower circuit:OFF
+    delay_ms(100);
+	  wr_cmd(0x2e);	      //Booster circuit:ON,Voltage regulator circuit:ON,Voltage follower circuit:OFF
+	  delay_ms(100);
+	  wr_cmd(0x2f);		  //Booster circuit:ON,Voltage regulator circuit:ON,Voltage follower circuit:ON
+	  delay_ms(100);
+     
+	  Clear_DDRAM();      //Clear display
+	  delay_ms(10);
+	  wr_cmd(0xaf);       //display on
+}
